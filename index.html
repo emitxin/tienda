@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Remeras Shop</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+    <!-- Navbar -->
+    <header class="navbar">
+        <div class="logo">Emitxin Remeras</div>
+        <div class="nav-links">
+            <a href="#catalogo">Catálogo</a>
+            <a href="#talles">Tabla de Talles</a>
+        </div>
+        <div class="cart-icon" id="open-cart">
+            🛒 <span id="cart-count">0</span>
+        </div>
+    </header>
+
+    <!-- Hero -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Estilo y Comodidad</h1>
+            <p>Descubrí nuestra nueva colección de remeras premium.</p>
+            <a href="#catalogo" class="btn-primary">Ver Catálogo</a>
+        </div>
+    </section>
+
+    <!-- Catálogo -->
+    <section id="catalogo" class="catalog">
+        <h2>Nuestros Productos</h2>
+        <div class="product-grid" id="product-grid">
+            <!-- Los productos se inyectan con JS -->
+        </div>
+    </section>
+
+    <!-- Tabla de Talles -->
+    <section id="talles" class="size-chart-section">
+        <h2>Tabla de Talles</h2>
+        <table class="size-chart">
+            <thead>
+                <tr>
+                    <th>Talle</th>
+                    <th>Pecho (cm)</th>
+                    <th>Largo (cm)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>S</td>
+                    <td>48-50</td>
+                    <td>67</td>
+                </tr>
+                <tr>
+                    <td>M</td>
+                    <td>51-53</td>
+                    <td>70</td>
+                </tr>
+                <tr>
+                    <td>L</td>
+                    <td>54-56</td>
+                    <td>73</td>
+                </tr>
+                <tr>
+                    <td>XL</td>
+                    <td>57-59</td>
+                    <td>76</td>
+                </tr>
+                <tr>
+                    <td>XXL</td>
+                    <td>60-62</td>
+                    <td>79</td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <!-- Modal Carrito -->
+    <div class="cart-overlay" id="cart-overlay"></div>
+    <div class="cart-sidebar" id="cart-sidebar">
+        <div class="cart-header">
+            <h3>Mi Pedido</h3>
+            <button id="close-cart">&times;</button>
+        </div>
+        <div class="cart-items" id="cart-items">
+            <!-- Items del carrito -->
+        </div>
+        <div class="cart-footer">
+            <div class="totals-box">
+                <div class="totals-row"><span>Subtotal</span><span>$<span id="subtotal-price">0</span></span></div>
+                <div class="totals-row"><span>Envío</span><span id="shipping-cost-label">$0</span></div>
+                <div class="totals-row totals-total"><span>Total</span><span>$<span id="total-price">0</span></span>
+                </div>
+            </div>
+
+            <div class="shipping-info" id="shipping-section">
+                <h4>Datos de Envío</h4>
+                <form id="shipping-form">
+                    <input type="text" id="ship-name" placeholder="Nombre completo" required>
+                    <input type="tel" id="ship-phone" placeholder="Teléfono" required>
+                    <input type="email" id="ship-email" placeholder="E-mail" required>
+
+                    <div class="delivery-methods">
+                        <label class="delivery-option">
+                            <input type="radio" name="delivery-mode" value="moto" checked>
+                            <span>🛵 Envío a Córdoba</span>
+                        </label>
+                        <label class="delivery-option">
+                            <input type="radio" name="delivery-mode" value="sucursal">
+                            <span>🏢 Sucursal de Correo Argentino <em>($8000)</em></span>
+                        </label>
+                    </div>
+
+                    <div class="delivery-moto" id="delivery-moto">
+                        <input type="text" id="ship-address" placeholder="Dirección" required>
+                        <p class="hint-box">🛵 Envío de moto dentro de la ciudad de Córdoba a pagar en destino</p>
+                    </div>
+
+                    <div class="delivery-sucursal" id="delivery-sucursal" style="display:none;">
+                        <p class="hint-box">🏢 Envío a sucursal de Correo Argentino ($8.000) a todo el país.<br>
+                            Encontrá el nombre de tu sucursal más cercana en este link:
+                            <a href="https://www.correoargentino.com.ar/formularios/sucursales" target="_blank"
+                                rel="noopener">Ver sucursales</a>
+                        </p>
+                        <select id="sucursal-provincia">
+                            <option value="">Seleccioná Provincia</option>
+                        </select>
+                        <input type="text" id="sucursal-nombre" placeholder="Escribí el nombre de la sucursal" required>
+                        <p class="sucursal-status" id="sucursal-status"></p>
+                    </div>
+
+                    <textarea id="ship-notes" placeholder="Aclaraciones (ej: piso, departamento)" rows="2"></textarea>
+                </form>
+
+                <div class="payment-info">
+                    <p>DATOS DE PAGO:</p>
+                    <ul>
+                        <li>🏦 Transferencia Bancaria<br><span class="pay-details">Alias: <b>PILAREM</b> — Pilar Emilse
+                                Martin</span></li>
+                    </ul>
+                </div>
+            </div>
+
+            <button id="checkout-whatsapp" class="btn-whatsapp">
+                Enviar Pedido por WhatsApp
+            </button>
+            <p class="btn-helper" id="btn-helper">Agregá productos al carrito para poder enviar el pedido.</p>
+        </div>
+    </div>
+
+    <script src="js/app.js"></script>
+</body>
+
+</html>
