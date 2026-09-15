@@ -195,20 +195,19 @@ function updateCart() {
             <div class="cart-item">
                 <div class="cart-item-info">
                     <h4>${item.name}</h4>
-                    <p>Talle: ${item.size}</p>
-                    <p>$${item.price.toLocaleString()} c/u</p>
-                    
+                    <div class="cart-item-meta">
+                        <span class="meta-size">Talle: ${item.size}</span>
+                        <span class="meta-price">$${item.price.toLocaleString()}</span>
+                    </div>
                     <div class="cart-item-controls">
                         <div class="qty-controls">
                             <button type="button" onclick="adjustCartQty(${index}, -1)">-</button>
                             <span>${item.quantity}</span>
                             <button type="button" onclick="adjustCartQty(${index}, 1)">+</button>
                         </div>
+                        <span class="cart-item-total">$${(item.price * item.quantity).toLocaleString()}</span>
                         <button class="cart-item-remove" onclick="removeFromCart(${index})">Eliminar</button>
                     </div>
-                </div>
-                <div class="cart-item-total">
-                    $${(item.price * item.quantity).toLocaleString()}
                 </div>
             </div>
         `).join('');
