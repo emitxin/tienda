@@ -24,6 +24,10 @@ const products = [
 // Estado del carrito
 let cart = [];
 
+// Pedido a registrar en Google Sheets pendiente de confirmar (al volver de WhatsApp)
+let pendingOrder = null;
+let orderSentToSheet = false;
+
 // ===================================================================
 // INTEGRACIÓN API MiCorreo (Correo Argentino) - SUCURSALES REALES
 // ===================================================================
@@ -159,7 +163,13 @@ function addToCart(productId) {
     renderProducts();
 
     updateCart();
-    toggleCart(true); // Abrir carrito
+    // El carrito NO se abre: la persona sigue navegando
+
+    // Micro-feedback visual en el ícono del carrito
+    const cartIcon = document.getElementById('open-cart');
+    cartIcon.classList.remove('cart-pop');
+    void cartIcon.offsetWidth;
+    cartIcon.classList.add('cart-pop');
 }
 
 // Actualizar carrito
@@ -247,6 +257,18 @@ function toggleCart(show) {
     }
 }
 
+// Al volver de WhatsApp (la persona mandó/envió el mensaje), se registra el pedido
+document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible' && pendingOrder && !orderSentToSheet) {
+        orderSentToSheet = true;
+        sendOrderToSheet(pendingOrder);
+        pendingOrder = null;
+        cart = [];
+        updateCart();
+        toggleCart(false);
+    }
+});
+
 // ===================================================================
 // INTEGRACIÓN GOOGLE SHEETS (registro de pedidos)
 // ===================================================================
@@ -312,8 +334,8 @@ function sendWhatsApp() {
         ? `Moto Córdoba: ${address} (a pagar por el comprador)`
         : `Sucursal Correo Argentino ($${shippingCost.toLocaleString()}): ${sucursalProv} - ${sucursalNombre}`;
 
-    // Registrar en Google Sheets (no bloquea el envío por WhatsApp)
-    sendOrderToSheet({
+    // NO se registra todavía: se guarda como pendiente hasta volver de WhatsApp
+    pendingOrder = {
         nombre: name,
         telefono: phone,
         email: email,
@@ -325,7 +347,8 @@ function sendWhatsApp() {
             cantidad: item.quantity,
             subtotal: item.price * item.quantity,
         })),
-    });
+    };
+    orderSentToSheet = false;
 
     let msg = "🛒 *Nuevo Pedido - Tienda Emitxin*\n\n";
 
@@ -354,7 +377,9 @@ function sendWhatsApp() {
     if (notes) msg += `📝 Notas: ${notes}\n\n`;
 
     msg += "--- PAGO ---\n";
-    msg += "Me van a compartir el Alias de la cuenta para la transferencia.";
+    msg += "🏦 *Transferencia Bancaria*\n";
+    msg += "Alias: PILAREM — Pilar Emilse Martin.\n";
+    msg += "¡No te olvides de enviar el comprobante!";
 
     // Codificar el mensaje para URL
     const encodedMsg = encodeURIComponent(msg);
@@ -362,7 +387,8 @@ function sendWhatsApp() {
     // IMPORTANTE: Reemplaza "549XXXXXXXXX" con tu número de WhatsApp con código de país
     const phoneNumber = "5493515932336"; // Ejemplo: +54 9 11 5555 1234
 
-    window.open(`https://wa.me/${phoneNumber}?text=${encodedMsg}`, '_blank');
+    // Navegar a WhatsApp en la misma pestaña: al volver, se confirma el envío
+    window.location.href = `https://wa.me/${phoneNumber}?text=${encodedMsg}`;
 }
 
 // Event Listeners
