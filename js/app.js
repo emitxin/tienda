@@ -251,7 +251,7 @@ function toggleCart(show) {
 // INTEGRACIÓN GOOGLE SHEETS (registro de pedidos)
 // ===================================================================
 const googleSheetConfig = {
-    url: "https://script.google.com/macros/s/AKfycbxo-6kzJF5Ebgb4W3W-JTDZfCv8JmX3jL0uiHvFSDErGnhB1rl9A_X4lFAvgV_EAEm9/exec",
+    url: "https://script.google.com/macros/s/AKfycbxZUg4v45Lm2q11h53IO41WB5GtGwBtaqymW_TdC8zRCKUJfeKTDUrQCs9asUdxeXFu/exec",
     secreto: "tienda-emitxin-2024",
 };
 
