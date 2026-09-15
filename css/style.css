@@ -55,7 +55,7 @@ html[data-theme="dark"] {
 }
 
 body {
-    font-family: 'Montserrat', sans-serif;
+    font-family: 'Rubik', sans-serif;
     background-color: var(--bg-color);
     color: var(--text-dark);
     line-height: 1.6;
