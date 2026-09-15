@@ -1,36 +1,24 @@
 const products = [
-    {
-        id: 1,
-        name: "Remera Básica Algodón",
-        price: 4500,
-        image: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60",
-        colors: ["Negro", "Blanco", "Gris"],
-        sizes: ["S", "M", "L", "XL"]
-    },
-    {
-        id: 2,
-        name: "Remera Oversized Street",
-        price: 5800,
-        image: "https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60",
-        colors: ["Verde Militar", "Beige", "Negro"],
-        sizes: ["S", "M", "L", "XL", "XXL"]
-    },
-    {
-        id: 3,
-        name: "Remera Polo Premium",
-        price: 7200,
-        image: "https://images.unsplash.com/photo-1586363104862-3a5e2ab60d99?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60",
-        colors: ["Azul Marino", "Blanco", "Rojo"],
-        sizes: ["M", "L", "XL"]
-    },
-    {
-        id: 4,
-        name: "Remera Deportiva Tech",
-        price: 6500,
-        image: "https://images.unsplash.com/photo-1618354691373-d851c5c3a990?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60",
-        colors: ["Negro", "Azul Eléctrico", "Gris Claro"],
-        sizes: ["S", "M", "L", "XL"]
-    }
+    { id: 1, name: "No Pasarán", price: 30000, image: "img/remera-16.png", sizes: ["S", "M", "L", "XL", "XXL"] },
+    { id: 2, name: "Siembra mundos", price: 30000, image: "img/remera-14.png", sizes: ["S", "M", "L", "XL", "XXL"] },
+    { id: 3, name: "Palestina libre", price: 30000, image: "img/remera-15.png", sizes: ["S", "M", "L", "XL", "XXL"] },
+    { id: 4, name: "Conspirar", price: 30000, image: "img/remera-13.png", sizes: ["S", "M", "L", "XL", "XXL"] },
+    { id: 5, name: "Las Malvinas son argentinas", price: 30000, image: "img/remera-01.png", sizes: ["S", "M", "L", "XL", "XXL"] },
+    { id: 6, name: "Abya Yala, ¡carajo!", price: 30000, image: "img/remera-02.png", sizes: ["S", "M", "L", "XL", "XXL"] },
+    { id: 7, name: "La libertad", price: 30000, image: "img/remera-03.png", sizes: ["S", "M", "L", "XL", "XXL"] },
+    { id: 8, name: "No somos territorio de sacrificio", price: 30000, image: "img/remera-04.png", sizes: ["S", "M", "L", "XL", "XXL"] },
+    { id: 9, name: "Cómplices", price: 30000, image: "img/remera-05.png", sizes: ["S", "M", "L", "XL", "XXL"] },
+    { id: 10, name: "Ni una menos", price: 30000, image: "img/remera-06.png", sizes: ["S", "M", "L", "XL", "XXL"] },
+    { id: 11, name: "Nunca más", price: 30000, image: "img/remera-07.png", sizes: ["S", "M", "L", "XL", "XXL"] },
+    { id: 12, name: "Seremos tumba del fascismo", price: 30000, image: "img/remera-08.png", sizes: ["S", "M", "L", "XL", "XXL"] },
+    { id: 13, name: "Pumitas", price: 30000, image: "img/remera-09.png", sizes: ["S", "M", "L", "XL", "XXL"] },
+    { id: 14, name: "Me cuidan mis amigues 10", price: 30000, image: "img/remera-10.png", sizes: ["S", "M", "L", "XL", "XXL"] },
+    { id: 15, name: "Niñes y Kuffiyeh", price: 30000, image: "img/remera-11.png", sizes: ["S", "M", "L", "XL", "XXL"] },
+    { id: 16, name: "Pachamama, no los perdones", price: 30000, image: "img/remera-12.png", sizes: ["S", "M", "L", "XL", "XXL"] },
+    { id: 17, name: "Revolución española", price: 30000, image: "img/remera-17.png", sizes: ["S", "M", "L", "XL", "XXL"] },
+    { id: 18, name: "Ruditx", price: 30000, image: "img/remera-18.png", sizes: ["S", "M", "L", "XL", "XXL"] },
+    { id: 19, name: "Cocineras", price: 30000, image: "img/remera-19.png", sizes: ["S", "M", "L", "XL", "XXL"] },
+    { id: 20, name: "La esperanza", price: 30000, image: "img/remera-20.png", sizes: ["S", "M", "L", "XL", "XXL"] }
 ];
 
 // Estado del carrito
@@ -116,22 +104,13 @@ function renderProducts() {
             <div class="product-options">
                 <div class="option-row">
                     <div class="option-group">
-                        <label for="color-${product.id}">Color:</label>
-                        <select id="color-${product.id}">
-                            ${product.colors.map(color => `<option value="${color}">${color}</option>`).join('')}
-                        </select>
-                    </div>
-                    
-                    <div class="option-group">
                         <label for="size-${product.id}">Talle:</label>
                         <select id="size-${product.id}">
                             ${product.sizes.map(size => `<option value="${size}">${size}</option>`).join('')}
                         </select>
                     </div>
-                </div>
 
-                <div class="option-row center-row">
-                    <div class="option-group qty-selector">
+                    <div class="option-group">
                         <label>Cant:</label>
                         <div class="qty-controls">
                             <button type="button" onclick="adjustLocalQty(${product.id}, -1)">-</button>
@@ -158,12 +137,11 @@ function adjustLocalQty(productId, change) {
 // Agregar al carrito
 function addToCart(productId) {
     const product = products.find(p => p.id === productId);
-    const color = document.getElementById(`color-${productId}`).value;
     const size = document.getElementById(`size-${productId}`).value;
     const qtyToAdd = localQty[productId] || 1;
 
     const existingItem = cart.find(item =>
-        item.id === productId && item.color === color && item.size === size
+        item.id === productId && item.size === size
     );
 
     if (existingItem) {
@@ -171,7 +149,6 @@ function addToCart(productId) {
     } else {
         cart.push({
             ...product,
-            color,
             size,
             quantity: qtyToAdd
         });
@@ -208,7 +185,7 @@ function updateCart() {
             <div class="cart-item">
                 <div class="cart-item-info">
                     <h4>${item.name}</h4>
-                    <p>Talle: ${item.size} | Color: ${item.color}</p>
+                    <p>Talle: ${item.size}</p>
                     <p>$${item.price.toLocaleString()} c/u</p>
                     
                     <div class="cart-item-controls">
@@ -303,12 +280,12 @@ function sendWhatsApp() {
     const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
     const total = subtotal + shippingCost;
 
-    let msg = "🛒 *Nuevo Pedido - RemerasShop*\n\n";
+    let msg = "🛒 *Nuevo Pedido - Tienda Emitxin*\n\n";
 
     msg += "--- PRODUCTOS ---\n";
     cart.forEach(item => {
         msg += `• ${item.name}\n`;
-        msg += `  Talle: ${item.size} | Color: ${item.color} | Cant: ${item.quantity}\n`;
+        msg += `  Talle: ${item.size} | Cant: ${item.quantity}\n`;
         msg += `  Subtotal: $${(item.price * item.quantity).toLocaleString()}\n\n`;
     });
 
@@ -378,6 +355,35 @@ function updateShipping() {
 document.querySelectorAll('input[name="delivery-mode"]').forEach(radio => {
     radio.addEventListener('change', updateShipping);
 });
+
+// Parallax del hero: el fondo se mueve a mitad de velocidad que el scroll
+const heroImg = document.querySelector('.hero-parallax > img');
+
+function updateParallax() {
+    if (!heroImg) return;
+    const speed = 0.5;
+    const offset = window.scrollY * speed;
+    heroImg.style.transform = `translateY(${offset}px)`;
+    requestAnimationFrame(updateParallax);
+}
+
+if (heroImg) requestAnimationFrame(updateParallax);
+
+// Tema claro / oscuro
+const themeToggle = document.getElementById('theme-toggle');
+
+function applyTheme(theme) {
+    document.documentElement.setAttribute('data-theme', theme);
+    themeToggle.textContent = theme === 'dark' ? '☀️' : '🌙';
+    localStorage.setItem('tienda-theme', theme);
+}
+
+themeToggle.addEventListener('click', () => {
+    const current = document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+    applyTheme(current === 'dark' ? 'light' : 'dark');
+});
+
+applyTheme(localStorage.getItem('tienda-theme') || 'light');
 
 // Inicializar
 renderProducts();
