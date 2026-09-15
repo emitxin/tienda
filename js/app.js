@@ -247,6 +247,34 @@ function toggleCart(show) {
     }
 }
 
+// ===================================================================
+// INTEGRACIÓN GOOGLE SHEETS (registro de pedidos)
+// ===================================================================
+const googleSheetConfig = {
+    url: "https://script.google.com/macros/s/AKfycbxo-6kzJF5Ebgb4W3W-JTDZfCv8JmX3jL0uiHvFSDErGnhB1rl9A_X4lFAvgV_EAEm9/exec",
+    secreto: "tienda-emitxin-2024",
+};
+
+// Envía el pedido a Google Sheets (registrar + descontar stock)
+async function sendOrderToSheet(order) {
+    try {
+        await fetch(googleSheetConfig.url, {
+            method: "POST",
+            body: JSON.stringify({
+                secreto: googleSheetConfig.secreto,
+                nombre: order.nombre,
+                telefono: order.telefono,
+                email: order.email,
+                envio: order.envio,
+                total: order.total,
+                pedido: order.pedido,
+            }),
+        });
+    } catch (err) {
+        console.error("Error guardando el pedido en Google Sheets:", err);
+    }
+}
+
 // Generar mensaje de WhatsApp
 function sendWhatsApp() {
     if (cart.length === 0) return;
@@ -279,6 +307,25 @@ function sendWhatsApp() {
 
     const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
     const total = subtotal + shippingCost;
+
+    const envioTxt = mode === "moto"
+        ? `Moto Córdoba: ${address} (a pagar por el comprador)`
+        : `Sucursal Correo Argentino ($${shippingCost.toLocaleString()}): ${sucursalProv} - ${sucursalNombre}`;
+
+    // Registrar en Google Sheets (no bloquea el envío por WhatsApp)
+    sendOrderToSheet({
+        nombre: name,
+        telefono: phone,
+        email: email,
+        envio: envioTxt,
+        total: total,
+        pedido: cart.map(item => ({
+            nombre: item.name,
+            talle: item.size,
+            cantidad: item.quantity,
+            subtotal: item.price * item.quantity,
+        })),
+    });
 
     let msg = "🛒 *Nuevo Pedido - Tienda Emitxin*\n\n";
 
