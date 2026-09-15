@@ -1,6 +1,16 @@
 const products = [
     { id: 1, name: "No Pasarán", price: 30000, image: "img/remera-16.webp", sizes: ["S", "M", "L", "XL", "XXL"] },
-    { id: 2, name: "Siembra mundos", price: 30000, image: "img/remera-14.webp", sizes: ["S", "M", "L", "XL", "XXL"] },
+    {
+        id: 2,
+        name: "Siembra mundos",
+        price: 30000,
+        image: "img/remera-14.webp",
+        sizes: ["S", "M", "L", "XL", "XXL"],
+        colors: [
+            { name: "Negro", image: "img/remera-14.webp" },
+            { name: "Violeta", image: "img/remera-14-violeta.webp" }
+        ]
+    },
     { id: 3, name: "Palestina libre", price: 30000, image: "img/remera-15.webp", sizes: ["S", "M", "L", "XL", "XXL"] },
     { id: 4, name: "Conspirar", price: 30000, image: "img/remera-13.webp", sizes: ["S", "M", "L", "XL", "XXL"] },
     { id: 5, name: "Las Malvinas son argentinas", price: 30000, image: "img/remera-01.webp", sizes: ["S", "M", "L", "XL", "XXL"] },
@@ -101,7 +111,7 @@ function renderProducts() {
         if (!localQty[product.id]) localQty[product.id] = 1;
         return `
         <div class="product-card">
-            <img src="${product.image}" alt="${product.name}">
+            <img id="product-image-${product.id}" src="${product.image}" alt="${product.name}">
             <h3 class="product-title">${product.name}</h3>
             <p class="product-price">$${product.price.toLocaleString()}</p>
             
@@ -113,6 +123,14 @@ function renderProducts() {
                             ${product.sizes.map(size => `<option value="${size}">${size}</option>`).join('')}
                         </select>
                     </div>
+
+                    ${product.colors ? `
+                    <div class="option-group">
+                        <label for="color-${product.id}">Color:</label>
+                        <select id="color-${product.id}" onchange="updateProductColor(${product.id})">
+                            ${product.colors.map(color => `<option value="${color.name}">${color.name}</option>`).join('')}
+                        </select>
+                    </div>` : ''}
 
                     <div class="option-group">
                         <label>Cant:</label>
@@ -138,14 +156,22 @@ function adjustLocalQty(productId, change) {
     document.getElementById(`qty-val-${productId}`).textContent = current;
 }
 
+function updateProductColor(productId) {
+    const product = products.find(p => p.id === productId);
+    const color = document.getElementById(`color-${productId}`).value;
+    const variant = product.colors.find(item => item.name === color);
+    document.getElementById(`product-image-${productId}`).src = variant.image;
+}
+
 // Agregar al carrito
 function addToCart(productId) {
     const product = products.find(p => p.id === productId);
     const size = document.getElementById(`size-${productId}`).value;
+    const color = product.colors ? document.getElementById(`color-${productId}`).value : null;
     const qtyToAdd = localQty[productId] || 1;
 
     const existingItem = cart.find(item =>
-        item.id === productId && item.size === size
+        item.id === productId && item.size === size && item.color === color
     );
 
     if (existingItem) {
@@ -154,6 +180,8 @@ function addToCart(productId) {
         cart.push({
             ...product,
             size,
+            color,
+            image: product.colors ? product.colors.find(item => item.name === color).image : product.image,
             quantity: qtyToAdd
         });
     }
@@ -194,7 +222,7 @@ function updateCart() {
         cartItemsContainer.innerHTML = cart.map((item, index) => `
             <div class="cart-item">
                 <div class="cart-item-info">
-                    <h4>${item.name} <span class="cart-item-size">(${item.size})</span></h4>
+                    <h4>${item.name} <span class="cart-item-size">(${item.size}${item.color ? ` - ${item.color}` : ''})</span></h4>
                     <div class="cart-item-controls">
                         <div class="qty-controls">
                             <button type="button" onclick="adjustCartQty(${index}, -1)">-</button>
@@ -339,6 +367,7 @@ function sendWhatsApp() {
         pedido: cart.map(item => ({
             nombre: item.name,
             talle: item.size,
+            color: item.color,
             cantidad: item.quantity,
             subtotal: item.price * item.quantity,
         })),
@@ -350,7 +379,7 @@ function sendWhatsApp() {
     msg += "--- PRODUCTOS ---\n";
     cart.forEach(item => {
         msg += `• ${item.name}\n`;
-        msg += `  Talle: ${item.size} | Cant: ${item.quantity}\n`;
+        msg += `  Talle: ${item.size}${item.color ? ` | Color: ${item.color}` : ''} | Cant: ${item.quantity}\n`;
         msg += `  Subtotal: $${(item.price * item.quantity).toLocaleString()}\n\n`;
     });
 

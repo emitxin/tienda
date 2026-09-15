@@ -505,6 +505,35 @@ html[data-theme="dark"] .btn-primary {
     margin-bottom: 1rem;
 }
 
+/* Site Footer */
+.site-footer {
+    text-align: center;
+    padding: 3rem 1rem 2.5rem;
+    background: var(--surface);
+    border-top: 1px solid var(--border-soft);
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+.site-footer a {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 0.8rem;
+    color: var(--text-dark);
+    text-decoration: none;
+    font-weight: 600;
+    transition: var(--transition);
+}
+
+.site-footer a:hover {
+    color: #E1306C;
+}
+
+.site-footer a svg {
+    flex-shrink: 0;
+}
+
 .btn-whatsapp:disabled,
 .btn-whatsapp.btn-disabled {
     background: var(--disabled-bg);
