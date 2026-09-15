@@ -16,6 +16,8 @@
     --hint-border: #cfe4f7;
     --disabled-bg: #cccccc;
     --disabled-text: #777777;
+    --add-btn-bg: #f39c12;
+    --add-btn-hover: #d98200;
     --text-light: #ffffff;
     --whatsapp-green: #25d366;
     --shadow: rgba(0,0,0,0.1);
@@ -188,7 +190,7 @@ body {
 .btn-primary {
     padding: 18px 44px;
     font-size: 1.15rem;
-    background: var(--cta-bg, #ffffff);
+    background: var(--cta-bg, var(--accent-color));
     color: var(--text-light);
     text-decoration: none;
     border-radius: 8px;
@@ -374,7 +376,7 @@ html[data-theme="dark"] .btn-primary {
 }
 
 .size-chart th {
-    background: var(--primary-color);
+    background: var(--add-btn-bg, var(--accent-color));
     color: var(--text-light);
     text-align: left;
 }
@@ -409,10 +411,11 @@ html[data-theme="dark"] .btn-primary {
     width: 380px;
     max-width: 90%;
     height: 100vh;
+    height: 100dvh;
     background: var(--secondary-color);
     z-index: 2000;
-    display: flex;
-    flex-direction: column;
+    overflow-y: auto;
+    overscroll-behavior: contain;
     transition: 0.4s cubic-bezier(0.25, 1, 0.5, 1);
     box-shadow: -5px 0 15px var(--shadow);
 }
@@ -436,14 +439,12 @@ html[data-theme="dark"] .btn-primary {
 #close-cart {
     background: none;
     border: none;
+    color: var(--accent-color);
     font-size: 1.5rem;
     cursor: pointer;
 }
 
 .cart-items {
-    flex-shrink: 0;
-    min-height: clamp(180px, 32vh, 320px);
-    overflow-y: auto;
     padding: 1.5rem;
 }
 
@@ -495,24 +496,13 @@ html[data-theme="dark"] .btn-primary {
 }
 
 .cart-footer {
-    display: flex;
-    flex-direction: column;
-    flex: 1 1 auto;
-    min-height: 0;
-    padding: 1rem 1.2rem 1.2rem;
+    padding: 1rem 1.2rem max(1.2rem, env(safe-area-inset-bottom));
     background: var(--surface-soft);
     border-top: 1px solid var(--border-soft);
 }
 
 .cart-footer .shipping-info {
-    flex: 1 1 auto;
-    overflow-y: auto;
-    min-height: 0;
-}
-
-.cart-footer .btn-whatsapp,
-.cart-footer .btn-helper {
-    flex: 0 0 auto;
+    margin-bottom: 1rem;
 }
 
 .btn-whatsapp:disabled,
