@@ -194,11 +194,7 @@ function updateCart() {
         cartItemsContainer.innerHTML = cart.map((item, index) => `
             <div class="cart-item">
                 <div class="cart-item-info">
-                    <h4>${item.name}</h4>
-                    <div class="cart-item-meta">
-                        <span class="meta-size">Talle: ${item.size}</span>
-                        <span class="meta-price">$${item.price.toLocaleString()}</span>
-                    </div>
+                    <h4>${item.name} <span class="cart-item-size">(${item.size})</span></h4>
                     <div class="cart-item-controls">
                         <div class="qty-controls">
                             <button type="button" onclick="adjustCartQty(${index}, -1)">-</button>
