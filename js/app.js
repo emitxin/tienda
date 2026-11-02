@@ -1,4 +1,12 @@
 const products = [
+    {
+        id: 21,
+        name: "Agenda 2027",
+        price: 37000,
+        discountedPrice: 33000,
+        image: "img/agenda-2027-placeholder.svg",
+        detailUrl: "agenda-2027.html"
+    },
     { id: 1, name: "No Pasarán", price: 30000, image: "img/remera-16.webp", sizes: ["S", "M", "L", "XL", "XXL"] },
     {
         id: 2,
@@ -111,18 +119,21 @@ function renderProducts() {
         if (!localQty[product.id]) localQty[product.id] = 1;
         return `
         <div class="product-card">
+            ${product.detailUrl ? `<a class="product-detail-link" href="${product.detailUrl}" aria-label="Ver detalles de ${product.name}">` : ''}
             <img id="product-image-${product.id}" src="${product.image}" alt="${product.name}">
-            <h3 class="product-title">${product.name}</h3>
+            ${product.detailUrl ? '</a>' : ''}
+            <h3 class="product-title">${product.detailUrl ? `<a href="${product.detailUrl}">${product.name}</a>` : product.name}</h3>
             <p class="product-price">$${product.price.toLocaleString()}</p>
+            ${product.discountedPrice ? `<p class="bulk-discount">Llevando 2 o más: $${product.discountedPrice.toLocaleString()} c/u</p>` : ''}
             
             <div class="product-options">
                 <div class="option-row">
-                    <div class="option-group">
+                    ${product.sizes ? `<div class="option-group">
                         <label for="size-${product.id}">Talle:</label>
                         <select id="size-${product.id}">
                             ${product.sizes.map(size => `<option value="${size}">${size}</option>`).join('')}
                         </select>
-                    </div>
+                    </div>` : ''}
 
                     ${product.colors ? `
                     <div class="option-group">
@@ -166,7 +177,8 @@ function updateProductColor(productId) {
 // Agregar al carrito
 function addToCart(productId) {
     const product = products.find(p => p.id === productId);
-    const size = document.getElementById(`size-${productId}`).value;
+    const sizeSelect = document.getElementById(`size-${productId}`);
+    const size = sizeSelect ? sizeSelect.value : null;
     const color = product.colors ? document.getElementById(`color-${productId}`).value : null;
     const qtyToAdd = localQty[productId] || 1;
 
@@ -222,14 +234,14 @@ function updateCart() {
         cartItemsContainer.innerHTML = cart.map((item, index) => `
             <div class="cart-item">
                 <div class="cart-item-info">
-                    <h4>${item.name} <span class="cart-item-size">(${item.size}${item.color ? ` - ${item.color}` : ''})</span></h4>
+                    <h4>${item.name}${item.size ? ` <span class="cart-item-size">(${item.size}${item.color ? ` - ${item.color}` : ''})</span>` : ''}</h4>
                     <div class="cart-item-controls">
                         <div class="qty-controls">
                             <button type="button" onclick="adjustCartQty(${index}, -1)">-</button>
                             <span>${item.quantity}</span>
                             <button type="button" onclick="adjustCartQty(${index}, 1)">+</button>
                         </div>
-                        <span class="cart-item-total">$${(item.price * item.quantity).toLocaleString()}</span>
+                        <span class="cart-item-total">$${(getItemUnitPrice(item) * item.quantity).toLocaleString()}</span>
                         <button class="cart-item-remove" onclick="removeFromCart(${index})">Eliminar</button>
                     </div>
                 </div>
@@ -238,10 +250,18 @@ function updateCart() {
     }
 
     // Calcular subtotal y total con envío
-    const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+    const subtotal = cart.reduce((sum, item) => sum + (getItemUnitPrice(item) * item.quantity), 0);
     subtotalPriceEl.textContent = subtotal.toLocaleString();
     shippingCostLabel.textContent = "$" + getShippingCost().toLocaleString();
     totalPriceEl.textContent = (subtotal + getShippingCost()).toLocaleString();
+}
+
+function getAgendaQuantity() {
+    return cart.reduce((sum, item) => item.id === 21 ? sum + item.quantity : sum, 0);
+}
+
+function getItemUnitPrice(item) {
+    return item.discountedPrice && getAgendaQuantity() >= 2 ? item.discountedPrice : item.price;
 }
 
 function adjustCartQty(index, change) {
@@ -350,7 +370,7 @@ function sendWhatsApp() {
         return;
     }
 
-    const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+    const subtotal = cart.reduce((sum, item) => sum + (getItemUnitPrice(item) * item.quantity), 0);
     const total = subtotal + shippingCost;
 
     const envioTxt = mode === "moto"
@@ -366,10 +386,10 @@ function sendWhatsApp() {
         total: total,
         pedido: cart.map(item => ({
             nombre: item.name,
-            talle: item.size,
+            talle: item.size || "—",
             color: item.color,
             cantidad: item.quantity,
-            subtotal: item.price * item.quantity,
+            subtotal: getItemUnitPrice(item) * item.quantity,
         })),
     };
     orderSentToSheet = false;
@@ -379,8 +399,9 @@ function sendWhatsApp() {
     msg += "--- PRODUCTOS ---\n";
     cart.forEach(item => {
         msg += `• ${item.name}\n`;
-        msg += `  Talle: ${item.size}${item.color ? ` | Color: ${item.color}` : ''} | Cant: ${item.quantity}\n`;
-        msg += `  Subtotal: $${(item.price * item.quantity).toLocaleString()}\n\n`;
+        if (item.size) msg += `  Talle: ${item.size}${item.color ? ` | Color: ${item.color}` : ''}\n`;
+        msg += `  Cant: ${item.quantity} | Precio unitario: $${getItemUnitPrice(item).toLocaleString()}\n`;
+        msg += `  Subtotal: $${(getItemUnitPrice(item) * item.quantity).toLocaleString()}\n\n`;
     });
 
     msg += `Subtotal: $${subtotal.toLocaleString()}\n`;
