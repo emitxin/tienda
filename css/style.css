@@ -304,6 +304,11 @@ html[data-theme="dark"] .btn-primary {
     align-items: start;
 }
 
+.agenda-gallery {
+    display: grid;
+    gap: 1rem;
+}
+
 .agenda-gallery img {
     width: 100%;
     max-width: 520px;

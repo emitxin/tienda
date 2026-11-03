@@ -4,7 +4,7 @@ const products = [
         name: "Agenda 2027",
         price: 37000,
         discountedPrice: 33000,
-        image: "img/agenda-2027-placeholder.svg",
+        image: "img/agenda-2027-placeholder.png",
         detailUrl: "agenda-2027.html"
     },
     { id: 1, name: "No Pasarán", price: 30000, image: "img/remera-16.webp", sizes: ["S", "M", "L", "XL", "XXL"] },
