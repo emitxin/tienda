@@ -42,10 +42,6 @@ const products = [
 // Estado del carrito
 let cart = [];
 
-// Pedido a registrar en Google Sheets pendiente de confirmar (al volver de WhatsApp)
-let pendingOrder = null;
-let orderSentToSheet = false;
-
 // ===================================================================
 // INTEGRACIÓN API MiCorreo (Correo Argentino) - SUCURSALES REALES
 // ===================================================================
@@ -300,18 +296,6 @@ function toggleCart(show) {
     }
 }
 
-// Al volver de WhatsApp (la persona mandó/envió el mensaje), se registra el pedido
-document.addEventListener('visibilitychange', () => {
-    if (document.visibilityState === 'visible' && pendingOrder && !orderSentToSheet) {
-        orderSentToSheet = true;
-        sendOrderToSheet(pendingOrder);
-        pendingOrder = null;
-        cart = [];
-        updateCart();
-        toggleCart(false);
-    }
-});
-
 // ===================================================================
 // INTEGRACIÓN GOOGLE SHEETS (registro de pedidos)
 // ===================================================================
@@ -320,11 +304,13 @@ const googleSheetConfig = {
     secreto: "tienda-emitxin-2024",
 };
 
-// Envía el pedido a Google Sheets (registrar + descontar stock)
+// Envía el pedido antes de abrir WhatsApp. `keepalive` permite que la
+// solicitud termine aunque la persona navegue fuera de la página.
 async function sendOrderToSheet(order) {
     try {
-        await fetch(googleSheetConfig.url, {
+        const response = await fetch(googleSheetConfig.url, {
             method: "POST",
+            headers: { "Content-Type": "text/plain;charset=utf-8" },
             body: JSON.stringify({
                 secreto: googleSheetConfig.secreto,
                 nombre: order.nombre,
@@ -334,7 +320,12 @@ async function sendOrderToSheet(order) {
                 total: order.total,
                 pedido: order.pedido,
             }),
+            keepalive: true,
         });
+        const result = await response.json();
+        if (!response.ok || !result.ok) {
+            throw new Error(result.error || `HTTP ${response.status}`);
+        }
     } catch (err) {
         console.error("Error guardando el pedido en Google Sheets:", err);
     }
@@ -377,8 +368,9 @@ function sendWhatsApp() {
         ? `Moto Córdoba: ${address} (a pagar por el comprador)`
         : `Sucursal Correo Argentino ($${shippingCost.toLocaleString()}): ${sucursalProv} - ${sucursalNombre}`;
 
-    // NO se registra todavía: se guarda como pendiente hasta volver de WhatsApp
-    pendingOrder = {
+    // Se registra antes de abrir WhatsApp para no perder el pedido si la
+    // persona no vuelve a esta pestaña luego de enviar el mensaje.
+    sendOrderToSheet({
         nombre: name,
         telefono: phone,
         email: email,
@@ -391,8 +383,7 @@ function sendWhatsApp() {
             cantidad: item.quantity,
             subtotal: getItemUnitPrice(item) * item.quantity,
         })),
-    };
-    orderSentToSheet = false;
+    });
 
     let msg = "🛒 *Nuevo Pedido - Tienda Emitxin*\n\n";
 
